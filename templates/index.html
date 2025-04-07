@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Swiggy Delivery Time Predictor</title>
+</head>
+<body>
+    <h2>Enter Delivery Details</h2>
+    <form method="POST" action="/predict">
+        <label>Delivery Distance (km):</label><br>
+        <input type="number" step="any" name="delivery_distance_km"><br><br>
+
+        <label>Order Amount:</label><br>
+        <input type="number" step="any" name="order_amount"><br><br>
+
+        <label>Traffic Level (0-3):</label><br>
+        <input type="number" name="traffic_level"><br><br>
+
+        <label>Rain Intensity (0-2):</label><br>
+        <input type="number" name="rain_intensity"><br><br>
+
+        <label>Pickup Time Hour (0-23):</label><br>
+        <input type="number" name="pickup_time_hour"><br><br>
+
+        <label>Pickup Time Minute (0-59):</label><br>
+        <input type="number" name="pickup_time_minute"><br><br>
+
+        <input type="submit" value="Predict">
+    </form>
+
+    {% if prediction_text %}
+        <h3>{{ prediction_text }}</h3>
+    {% endif %}
+</body>
+</html>
