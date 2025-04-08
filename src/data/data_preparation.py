@@ -2,6 +2,10 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 import logging
 from pathlib import Path
+import numpy as np
+import yaml
+from datetime import datetime
+import re
 
 TARGET = "time_taken"
 
@@ -38,8 +42,19 @@ def save_data(data: pd.DataFrame, save_path: Path) -> None:
     logger.info(f"Data saved to {save_path}")
 
 if __name__ == "__main__":
+
+
     # Root path
     root_path = Path(__file__).parent.parent.parent
+
+    # Load parameters
+    with open(root_path / "params.yaml", "r") as file:
+        params = yaml.safe_load(file)
+        testsize = params["Train"]["test_size"]
+        randomstate = params["Train"]["random_state"]
+
+    print(f"Test size: {testsize}")
+    print(f"Random state: {randomstate}")
     
     # File paths
     data_path = root_path / "data" / "cleaned" / "swiggy_cleaned.csv"
@@ -53,8 +68,8 @@ if __name__ == "__main__":
     save_test_path = save_data_dir / test_filename
 
     # Set parameters manually
-    test_size = 0.2
-    random_state = 42
+    test_size = testsize
+    random_state = randomstate
 
     # Load, split and save
     df = load_data(data_path)

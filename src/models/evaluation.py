@@ -1,6 +1,7 @@
 import pandas as pd
 import joblib
 from pathlib import Path
+import json
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 
 # Target column name
@@ -17,6 +18,16 @@ def make_X_and_y(data, target_column):
     return X, y
 
 if __name__ == "__main__":
+
+    #make metrics.json file
+    metrics = {
+        "MAE": None,
+        "MSE": None,
+        "R2": None
+    }
+    with open("metrics.json", "w") as f:
+        json.dump(metrics, f)
+
     # Paths
     root_path = Path(__file__).parent.parent.parent
     test_data_path = root_path / "data" / "processed" / "test_trans.csv"
@@ -37,3 +48,16 @@ if __name__ == "__main__":
     print("MAE:", mean_absolute_error(y_test, y_pred))
     print("MSE:", mean_squared_error(y_test, y_pred))
     print("R2 Score:", r2_score(y_test, y_pred))
+
+
+
+    metrics={
+        "MAE": mean_absolute_error(y_test, y_pred),
+        "MSE": mean_squared_error(y_test, y_pred), 
+        "R2": r2_score(y_test, y_pred)
+    }
+    with open("metrics.json", "w") as f:
+        json.dump(metrics, f)
+
+
+

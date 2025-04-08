@@ -117,7 +117,7 @@ if __name__ == "__main__":
 
     cleaned_data_filename = "swiggy_cleaned.csv"
     cleaned_data_save_path = cleaned_data_save_dir / cleaned_data_filename
-    data_load_path = "swiggy.csv"
+    data_load_path = root_path / "data" / "raw" / "swiggy.csv"
 
     df = load_data(data_load_path)
     perform_data_cleaning(data=df, saved_data_path=cleaned_data_save_path)

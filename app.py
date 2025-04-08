@@ -1,38 +1,48 @@
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, render_template, request
 import pandas as pd
 import joblib
 from pathlib import Path
 
 app = Flask(__name__)
 
-# Load model
-model_path = Path(__file__).parent / "models" / "model.pkl"
-model = joblib.load(model_path)
+# Paths
+BASE_DIR = Path(__file__).resolve().parent
+model = joblib.load(BASE_DIR / "models" / "model.pkl")
+preprocessor = joblib.load(BASE_DIR / "models" / "preprocessor.pkl")
 
-@app.route('/')
-def home():
-    return render_template("index.html")
+@app.route("/", methods=["GET", "POST"])
+def index():
+    prediction = None
 
-@app.route('/predict', methods=['POST'])
-def predict():
-    try:
-        # Extract form data
-        data = {
-            'delivery_distance_km': float(request.form['delivery_distance_km']),
-            'order_amount': float(request.form['order_amount']),
-            'traffic_level': int(request.form['traffic_level']),
-            'rain_intensity': int(request.form['rain_intensity']),
-            'pickup_time_hour': int(request.form['pickup_time_hour']),
-            'pickup_time_minute': int(request.form['pickup_time_minute'])
+    if request.method == "POST":
+        # Get form data
+        form_data = {
+            "age": int(request.form["age"]),
+            "ratings": float(request.form["ratings"]),
+            "pickup_time_minutes": int(request.form["pickup_time_minutes"]),
+            "distance": float(request.form["distance"]),
+            "weather": request.form["weather"],
+            "type_of_order": request.form["type_of_order"],
+            "type_of_vehicle": request.form["type_of_vehicle"],
+            "festival": request.form["festival"],
+            "city_type": request.form["city_type"],
+            "is_weekend": request.form["is_weekend"],
+            "order_time_of_day": request.form["order_time_of_day"],
+            "traffic": request.form["traffic"],
+            "distance_type": request.form["distance_type"],
+            "multiple_deliveries": int(request.form["multiple_deliveries"]),
+            "vehicle_condition": int(request.form["vehicle_condition"])
         }
 
-        input_df = pd.DataFrame([data])
-        prediction = model.predict(input_df)[0]
+        # Convert to DataFrame
+        df = pd.DataFrame([form_data])
 
-        return render_template('index.html', prediction_text=f"Predicted Delivery Time: {round(prediction, 2)} minutes")
+        # Preprocess and Predict
+        transformed = preprocessor.transform(df)
+        pred = model.predict(transformed)[0]
+        prediction = round(pred, 2)
 
-    except Exception as e:
-        return jsonify({'error': str(e)})
+    return render_template("index.html", prediction=prediction)
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     app.run(debug=True)

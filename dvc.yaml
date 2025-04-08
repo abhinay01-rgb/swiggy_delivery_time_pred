@@ -28,20 +28,23 @@ stages:
     outs:
     - data/processed/train_trans.csv
     - data/processed/test_trans.csv
-    - models/preprocessor.joblib
 
   train:
     cmd: python src/models/train.py
     deps:
-    - src/models/train.py
-    - data/processed/train_trans.csv
+      - src/models/train.py
+      - data/processed/train_trans.csv
+      - params.yaml
     params:
-    - Train.Random_Forest
-    - Train.LightGBM
+      - Train.model_name
+      - Train.XGBoost
+      - Train.RandomForest
+      - Train.LightGBM
+      - Train.DecisionTree
     outs:
-    - models/model.joblib
-    - models/power_transformer.joblib
-    - models/stacking_regressor.joblib
+      - models/model.pkl
+
+
 
   evaluation:
     cmd: python src/models/evaluation.py
@@ -49,8 +52,7 @@ stages:
     - src/models/evaluation.py
     - data/processed/train_trans.csv
     - data/processed/test_trans.csv
-    - models/model.joblib
+    - models/model.pkl
     outs:
-    - run_information.json
     - metrics.json
 

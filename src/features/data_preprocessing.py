@@ -57,3 +57,12 @@ train_trans_df.to_csv(save_dir / "train_trans.csv", index=False)
 test_trans_df.to_csv(save_dir / "test_trans.csv", index=False)
 
 
+# === Save the Preprocessor ===
+model_dir = root_path / "models"
+model_dir.mkdir(exist_ok=True)  # Ensure models directory exists
+joblib.dump(preprocessor, model_dir / "preprocessor.pkl")
+
+print("Preprocessor saved to:", model_dir / "preprocessor.pkl")
+
+
+
